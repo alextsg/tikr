@@ -4,9 +4,9 @@
 
 ## Team
 
-  - __Product Owner__: Mike Staub (mikestaub)
-  - __Scrum Master__: Bryan Venable (bryanlvenable)
-  - __Development Team Members__: Mike (mikestaub), Bryan (bryanlvenable), Travis (teechap), Richard (rvbsanjose)
+  - __Product Owner__: Pranay Sangani (@peerwit)
+  - __Scrum Master__: Alex Tseung (??)
+  - __Development Team Members__: Pranay (@peerwit), Alex (???), Adrian Garza (@agarza333), Philip Rosen (???)
 
 ## Table of Contents
 
