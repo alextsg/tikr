@@ -5,8 +5,8 @@
 ## Team
 
   - __Product Owner__: Pranay Sangani (@peerwit)
-  - __Scrum Master__: Alex Tseung (??)
-  - __Development Team Members__: Pranay (@peerwit), Alex (???), Adrian Garza (@agarza333), Philip Rosen (???)
+  - __Scrum Master__: Alex Tseung (@alextsg)
+  - __Development Team Members__: Pranay (@peerwit), Alex (@alextsg), Adrian Garza (@agarza333), Philip Rosen (???)
 
 ## Table of Contents
 
