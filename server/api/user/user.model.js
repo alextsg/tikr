@@ -3,8 +3,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
-var authTypes = ['github'];
-var github = require('octonode');
+var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
   name: String,
@@ -16,9 +15,10 @@ var UserSchema = new Schema({
   hashedPassword: String,
   provider: String,
   salt: String,
-  github: {},
-  skills: [],
-  languages: {}
+  facebook: {},
+  twitter: {},
+  google: {},
+  github: {}
 });
 
 /**
@@ -122,38 +122,6 @@ UserSchema.methods = {
     return this.encryptPassword(plainText) === this.hashedPassword;
   },
 
-  getSkills: function(token){
-    var self = this;
-    var client = github.client(token);
-
-    client.get('/users/'+self.github.login+'/repos', {}, function(err, status, repos, headers){
-      var totalBytes = 0;
-      var languages = {};
-      var count = 0;
-      for(var i = 0; i < repos.length; i++){
-        var url = '/repos/'+self.github.login+'/'+repos[i].full_name.split('/')[1]+'/languages';
-        client.get(url, function(err, status, body, headers){
-          for(var key in body){
-            totalBytes += body[key];
-            if(languages.hasOwnProperty(key)){
-              languages[key] += body[key];
-            } else {
-              languages[key] = body[key];
-            }
-          }
-          count++;
-          if(count === repos.length){
-            // done, save to db
-            self.languages = languages;
-            self.save(function(err){
-              if(err) throw err;
-            });
-          }
-        });
-      }
-    });
-  },
-
   /**
    * Make salt
    *
@@ -162,6 +130,10 @@ UserSchema.methods = {
    */
   makeSalt: function() {
     return crypto.randomBytes(16).toString('base64');
+  },
+
+  getSkills: function() {
+    console.log(crypto.randomBytes(16).toString('base64'), "get skills");
   },
 
   /**
