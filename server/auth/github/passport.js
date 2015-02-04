@@ -8,6 +8,7 @@ exports.setup = function (User, config) {
       callbackURL: config.github.callbackURL
     },
     function(token, tokenSecret, profile, done) {
+      console.log('asdf')
     User.findOne({
       'github.id': profile.id
     }, function(err, user) {

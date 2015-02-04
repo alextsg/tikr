@@ -21,6 +21,15 @@ exports.index = function(req, res) {
 };
 
 /**
+ * Get list of users
+ * restriction: 'admin'
+ */
+exports.getSkills = function(req, res) {
+  console.log("asdfsadf=1-231230")
+};
+
+
+/**
  * Creates a new user
  */
 exports.create = function (req, res, next) {
@@ -43,7 +52,6 @@ exports.show = function (req, res, next) {
   User.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
-    console.log("LOGGING USER JSON", user);
     res.json(user.profile);
   });
 };
@@ -81,28 +89,6 @@ exports.changePassword = function(req, res, next) {
 };
 
 /**
- * Query for users by skills
- */
-exports.search = function(req, res, next) {
-  // return users who have all of the specified skills
-  if(req.body.hasAllSkills){
-    User.find({'skills': { $all: req.body.skills}}, '-salt -hashedPassword', 
-     function(err, users) {
-      if (err) return next(err);
-      if (!users) return res.json(401);
-      res.json(users);
-    });
-  } else { // return users who have at least one of the skills
-    User.find({'skills': { $in: req.body.skills }}, '-salt -hashedPassword', 
-     function(err, users) {
-      if (err) return next(err);
-      if (!users) return res.json(401);
-      res.json(users);
-    });
-  }
-};
-
-/**
  * Get my info
  */
 exports.me = function(req, res, next) {
@@ -121,37 +107,4 @@ exports.me = function(req, res, next) {
  */
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
-};
-
-exports.getUserProfile = function(req, res, next){
-
-  User.findOne({'github.login': req.params.githubUsername},
-    '-salt -hashedPassword',
-    function(err, user){
-      if (err){
-        return next(err);
-      }
-      if (!user){
-        return res.send('Could not find that profile', 404);
-      }
-      //console.log("THISIS THE USER DATA ON THE SERVER", user);
-      res.json(user);
-  });
-};
-
-exports.postNewSkill = function(req, res, next){
-  //TODO verify that user authorized to add a skill on server side
-
-  User.findOneAndUpdate(
-    {'github.login': req.params.githubUsername},
-    {$push: {skills: req.body}},
-    {safe: true},
-    function(err, user){ //user is the full updated user document (a js object)
-      if (err) {
-        res.send(500);
-      } else {
-        res.json(user);
-      }
-    }
-  );
 };
