@@ -26,7 +26,7 @@ var all = {
 
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
-    session: 'tikr-secret'
+    session: 'new-yo-secret'
   },
 
   // List of user roles
@@ -41,12 +41,29 @@ var all = {
     }
   },
 
-  github: {
-    clientID:     process.env.GITHUB_ID || 'id',
-    clientSecret: process.env.GITHUB_SECRET || 'secret',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/github/callback'
+  facebook: {
+    clientID:     process.env.FACEBOOK_ID || 'id',
+    clientSecret: process.env.FACEBOOK_SECRET || 'secret',
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/facebook/callback'
   },
 
+  twitter: {
+    clientID:     process.env.TWITTER_ID || 'id',
+    clientSecret: process.env.TWITTER_SECRET || 'secret',
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
+  },
+
+  google: {
+    clientID:     process.env.GOOGLE_ID || 'id',
+    clientSecret: process.env.GOOGLE_SECRET || 'secret',
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  },
+
+  github: {
+    clientID:     process.env.GITHUB_ID || '48b69f2b9328a9534590',
+    clientSecret: process.env.GITHUB_SECRET || '52732b2c8bf0b6e4a885b6a7b4580c67e625bf69',
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/github/callback'
+  }
 };
 
 // Export the config object based on the NODE_ENV
