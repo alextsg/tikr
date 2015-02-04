@@ -21,6 +21,15 @@ exports.index = function(req, res) {
 };
 
 /**
+ * Get list of users
+ * restriction: 'admin'
+ */
+exports.getSkills = function(req, res) {
+  console.log("asdfsadf=1-231230")
+};
+
+
+/**
  * Creates a new user
  */
 exports.create = function (req, res, next) {

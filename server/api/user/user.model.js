@@ -132,6 +132,10 @@ UserSchema.methods = {
     return crypto.randomBytes(16).toString('base64');
   },
 
+  getSkills: function() {
+    console.log(crypto.randomBytes(16).toString('base64'))
+  },
+
   /**
    * Encrypt password
    *
