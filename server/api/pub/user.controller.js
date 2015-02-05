@@ -5,6 +5,8 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var http = require('http');
+// var request = require('request');
+var https = require('https');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -50,24 +52,45 @@ exports.create = function (req, res, next) {
 exports.show = function (req, res, next) {
   var userId = req.params.id;
   console.log(userId);
-  var key = '48b69f2b9328a9534590';
-  var sec = '52732b2c8bf0b6e4a885b6a7b4580c67e625bf69';
-
+  var key = '2f7424c2dcb96b2d19d1';
+  var sec = 'd68ca1fb9bf38eefece375ae85c618cbbeb94d92';
+// https://api.github.com/users/alextsg?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92
   var requestObject = {
-    host: 'https://api.github.com',
-    path: '/users/' + userId + '?client_id='+key+'&client_secret='+sec
+    host: 'api.github.com',
+    path: '/users/' + userId + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
+    port: 443,
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': userId
+    }
   };
+
+  // var requestObject = {
+  //   host: 'google.com',
+  //   path: '/users/alextsg?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
+  //   port: 443,
+  //   method: 'GET',
+  //   headers: {
+  //       'Content-Type': 'application/json'
+  //   }
+  // };
 
   // http.request(requestObject, function(err, res) {
   //   console.log(err, "ERROR");
   //   console.log(res, "RESPONSE");
   // });
-  http.get(requestObject, function(res) {
-    res.on('data', function (data) {
-      console.log(data.toString());
-    })
+  https.get(requestObject, function(response) {
+    var data;
+    response.on('data', function (chunk) {
+      data += chunk;
+    });
+    response.on('end', function(){
+      console.log(data)
+      res.json({message: data.toString()})
+    });
   }).on('error', function(e) {
-    console.log("Got error: " + e.message);
+    console.log("Got error: " + e);
   }).on('data', function(d) {
     console.log(d);
   });

@@ -14,10 +14,13 @@ module.exports = function(app) {
   app.use('/api/profiles', require('./api/user'));
   app.use('/pub', require('./api/pub'));
   app.use('/auth', require('./auth'));
-
-  // All undefined asset or api routes should return a 404
-  app.route('/:url(api|auth|components|app|bower_components|assets)/*')
-   .get(errors[404]);
+  app.use('/devs/:username', function(req, res) {
+    // res
+    res.sendfile(app.get('appPath') + '/index.html');
+  });
+  // // All undefined asset or api routes should return a 404
+  // app.route('/:url(api|auth|components|app|bower_components|assets)/*')
+  //  .get(errors[404]);
 
   // All other routes should redirect to the index.html
   app.route('/*')
