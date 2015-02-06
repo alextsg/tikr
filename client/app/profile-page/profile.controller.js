@@ -2,10 +2,13 @@
 
 angular.module('tikrApp')
   .controller('ProfileCtrl', function ($scope, $http, $rootScope, $modal, messageService, $stateParams, $location, Auth, User) {
-
     $scope.languages = {};
     $scope.currentUsername = $stateParams.username;
     $scope.showFormToAddSkills = false;
+    $scope.showFormToAddRepos = false;
+    $scope.userProfile;
+    //$scope.userProfile.repolist = [];
+
     $scope.getUserProfile = function(){
       var githubUsername = $stateParams.username;
       var url = 'api/users/profiles/'+githubUsername;
@@ -38,6 +41,31 @@ angular.module('tikrApp')
       });
     };
 
+    $scope.getRepos = function(){
+      console.log('getRepos');
+      $scope.userProfile.repolist = [{repoName: 'Test1', repoUrl: 'Link'},{repoName: 'Test2', repoUrl: 'Link2'}];
+      var githubUsername = $stateParams.username;
+      var url = 'pub/'+githubUsername+'/repos';
+
+      return $http({
+        method: 'GET',
+        url: url
+      }).
+      success(function(repos) {
+        //$scope.userProfile.repolist = repos.repos;
+        console.log($scope.userProfile.repolist);
+        return;
+      }).
+      error(function(data, status/*headers, config*/) {
+        console.log('There has been an error', data);
+        if (status === 404){
+          $location.path('/pagenotfound');
+        }
+        return data;
+      });
+    }
+
+
     $scope.isLoggedInAsCurrentUser = function(){
       var currentUserPage = $stateParams.username;
       var loggedInUser = Auth.getCurrentUser();
@@ -51,8 +79,32 @@ angular.module('tikrApp')
       return false;
     };
 
+    $scope.showAddReposForm = function(){
+      $scope.showFormToAddRepos = true;
+      $scope.getRepos();
+    };
+
     $scope.showAddSkillsForm = function(){
       $scope.showFormToAddSkills = true;
+    };
+
+    $scope.addARepo = function(name, url){
+      $scope.showFormToAddRepos = false;
+      var newRepoName = name;
+      var newRepoUrl = url;
+      console.log('hi');
+      //submit POST request to server to add a skill to the current user's profile
+      var githubUsername = $stateParams.username;
+      var url = 'api/users/profiles/repo/'+githubUsername;
+      console.log('reponame: ', newRepoName);
+      console.log('repolink:', newRepoUrl);
+      $http.post(url, {repoName: newRepoName, repoUrl: newRepoUrl}).
+      success(function(profile/*status, headers, config*/) {
+        $scope.userProfile = profile;
+      }).
+      error(function(data, status, headers, config) {
+        console.log("Error adding skill", data, status);
+      });
     };
 
     $scope.addASkill = function(formdata){
@@ -63,7 +115,7 @@ angular.module('tikrApp')
       if (formdata.$valid){
         //submit POST request to server to add a skill to the current user's profile
         var githubUsername = $stateParams.username;
-        var url = 'api/users/profiles/'+githubUsername;
+        var url = 'api/users/profiles/skill/'+githubUsername;
 
         $http.post(url, {skillname: newSkillName, githublink: newSkillLink}).
         success(function(profile/*status, headers, config*/) {
@@ -142,6 +194,16 @@ angular.module('tikrApp')
     };
 
     $scope.getUserProfile();
+
+    $scope.hasRepos = function(){
+      console.log($scope.userProfile);
+      console.log($scope.userProfile.repos);
+      if ($scope.userProfile && $scope.userProfile.repos){
+        return true;
+      } else {
+        return false;
+      }
+    };
 
     $scope.hasSkills = function(){
       if ($scope.userProfile && $scope.userProfile.skills){

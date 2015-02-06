@@ -77,6 +77,21 @@ exports.showUser = function (req, res, next) {
   }).on('data', function(d) {
     console.log(d);
   });
+
+  https.get(requestObject, function(response) {
+    var data = '';
+    response.on('data', function (chunk) {
+      data += chunk;
+    });
+    response.on('end', function(){
+      console.log(data.toString(), "DATA")
+      res.json({message: data.toString()})
+    });
+  }).on('error', function(e) {
+    console.log("Got error: " + e);
+  }).on('data', function(d) {
+    console.log(d);
+  });
 };
 
 
@@ -106,9 +121,15 @@ exports.showRepos = function (req, res, next) {
     response.on('end', function(){
       var repos = data.toString();
       repos = JSON.parse(JSON.parse(JSON.stringify(repos)));
+      console.log(repos);
       repos = repos.map(function(e) {
         return {repoName: e.name, repoUrl: e.url}
-      })
+      });
+
+      // repos.forEach(function(e) {
+      //   requestObject.path = '/users/' + userId + '/repos' + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92'
+      //   https.get()
+      // })
       res.json({repos: repos});
     });
   }).on('error', function(e) {

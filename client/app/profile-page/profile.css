@@ -36,3 +36,35 @@
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
+
+.btn-send {
+    margin-left: 40px;
+    margin-top: 10px;
+}
+
+.skills-msg {
+    margin-bottom: 20px;
+}
+
+.btn-repo {
+    display:block;
+    margin-top:10px;
+}
+
+.btn-skill {
+    display:block;
+    margin-top:10px;
+}
+
+.repo {
+    display:block;
+}
+
+.reponame {
+    display:inline-block;
+    font-weight:bold;
+}
+
+.repourl {
+    display:inline-block;
+}
