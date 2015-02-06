@@ -4,8 +4,6 @@ var User = require('../user/user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
-var http = require('http');
-// var request = require('request');
 var https = require('https');
 
 var validationError = function(res, err) {
@@ -49,13 +47,15 @@ exports.create = function (req, res, next) {
 /**
  * Get a single user
  */
-exports.showUser = function (req, res, next) {
+exports.show = function (req, res, next) {
   var userId = req.params.id;
+  console.log(userId);
   var key = '2f7424c2dcb96b2d19d1';
   var sec = 'd68ca1fb9bf38eefece375ae85c618cbbeb94d92';
+// https://api.github.com/users/alextsg?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92
   var requestObject = {
     host: 'api.github.com',
-    path: '/users/' + userId + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
+    path: '/users/' + userId + '/repos' + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
     port: 443,
     method: 'GET',
     headers: {
@@ -63,8 +63,9 @@ exports.showUser = function (req, res, next) {
         'User-Agent': userId
     }
   };
+  // console.log(re);
   https.get(requestObject, function(response) {
-    var data = '';
+    var data;
     response.on('data', function (chunk) {
       data += chunk;
     });
@@ -77,53 +78,6 @@ exports.showUser = function (req, res, next) {
   }).on('data', function(d) {
     console.log(d);
   });
-};
-
-
-
-/**
- * Get a single user's repos
- */
-exports.showRepos = function (req, res, next) {
-  var userId = req.params.id;
-  var key = '2f7424c2dcb96b2d19d1';
-  var sec = 'd68ca1fb9bf38eefece375ae85c618cbbeb94d92';
-  var requestObject = {
-    host: 'api.github.com',
-    path: '/users/' + userId + '/repos' + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
-    port: 443,
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': userId
-    }
-  };
-  https.get(requestObject, function(response) {
-    var data = '';
-    response.on('data', function (chunk) {
-      data += chunk;
-    });
-    response.on('end', function(){
-      var repos = data.toString();
-      repos = JSON.parse(JSON.parse(JSON.stringify(repos)));
-      repos = repos.map(function(e) {
-        return {repoName: e.name, repoUrl: e.url}
-      })
-      res.json({repos: repos});
-    });
-  }).on('error', function(e) {
-    console.log("Got error: " + e);
-  }).on('data', function(d) {
-    console.log(d);
-  });
-};
-
-
-/**
- * Update a user
- */
-exports.updateUser = function (req, res, next) {
-  // TODO
 };
 
 /**

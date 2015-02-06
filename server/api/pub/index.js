@@ -9,9 +9,10 @@ var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.get('/me', auth.isAuthenticated(), controller.me);
-router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-router.get('/:id', controller.show);
-router.post('/', controller.create);
+router.get('/:id/repos', controller.showRepos);
+router.get('/:id', controller.showUser);
+router.post('/:id/:data', controller.updateUser);
 
 module.exports = router;
+
+// {repos: [{repoName: "asdfasdf", repoURL: 'asdf'}]}

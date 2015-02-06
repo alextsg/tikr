@@ -62,6 +62,10 @@ angular.module('tikrApp')
         });
 
         return deffered.promise;
+      }, 
+
+      get: function (url, cb) {
+        $http.get(url).success(cb);
       }
 
     };

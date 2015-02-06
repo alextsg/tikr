@@ -26,5 +26,5 @@ angular.module('tikrApp')
         url: '/create',
         templateUrl: 'app/message/message.create.html'
       });
-    $urlRouterProvider.otherwise('/messages/inbox');
+
   });
