@@ -12,7 +12,7 @@ var router = express.Router();
 router.get('/repos', controller.me);
 router.get('/all/:id', controller.sync);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-router.get('/:id', controller.show); // make it a protected resource
+router.get('/:id', controller.showRepos); // make it a protected resource
 router.post('/', controller.create);
 
 module.exports = router;
