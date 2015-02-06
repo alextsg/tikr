@@ -91,6 +91,44 @@ exports.destroy = function(req, res) {
   });
 };
 
+exports.sync = function(req, res) {
+
+  var userId = req.params.id;
+  console.log(userId)
+  var path = '/users/' + userId + '/repos' + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92';
+  path = '/users/alextsg/subscriptions?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92';
+  var requestObject = {
+    host: 'api.github.com',
+    path: path,
+    port: 443,
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': userId
+    }
+  };
+  https.get(requestObject, function(response) {
+    var data = '';
+    response.on('data', function (chunk) {
+      data += chunk;
+    });
+    response.on('end', function(){
+      console.log(data.toString(), "DATA")
+      var repos = data.toString();
+      repos = JSON.parse(JSON.parse(JSON.stringify(repos))) || [];
+      console.log(repos);
+      // repos = repos.map(function(e) {
+      //   return {repoName: e.name, repoUrl: e.url}
+      // });
+      res.json({message: repos})
+    });
+  }).on('error', function(e) {
+    console.log("Got error: " + e);
+  }).on('data', function(d) {
+    console.log(d);
+  });
+};
+
 /**
  * Change a users password
  */

@@ -15,6 +15,7 @@ module.exports = function(app) {
   app.use('/pub', require('./api/pub'));
   app.use('/auth', require('./auth'));
   app.use('/repos', require('./api/repos'));
+  app.use('/sync', require('./api/repos'));
   app.use('/devs/:username', function(req, res) {
     // res
     console.log('First Log ------- -');
