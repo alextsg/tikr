@@ -18,17 +18,27 @@
       <div ng-show="!hasRepos() && isLoggedInAsCurrentUser" class="skills-msg">You haven't added any repos yet :-(</div>
       <div ng-show="!hasRepos() && !isLoggedInAsCurrentUser" class="skills-msg">{{currentUsername}} hasn't added any repos yet :-(</div>
       <ul class="nav nav-pills nav-stacked" ng-repeat="repo in userProfile.repos">
-        <li><a target="_blank" ng-href="{{repo.repoUrl}}">{{repo.repoName}}</a></li>
-      </ul>
-      <button ng-show="isLoggedInAsCurrentUser() && !showFormToAddRepos" class="btn btn-default btn-repo" ng-click="showAddReposForm()">Add a Repo</button>
-      <ul class="nav nav-pills nav-stacked" ng-repeat="repos in userProfile.repolist">
         <li>
-          <a target="_blank" ng-href="{{repo.repoUrl}}" ng-click="addARepo(repos.repoName, repos.repoUrl)">
-            <div class="reponame" name="repoName">{{repos.repoName}}</div>
-            <div class="repourl" name="repoUrl">{{repos.repoUrl}}</div>
+          <a target="_blank" ng-href="{{repo.repoUrl}}">
+            <div class="reponame">{{repo.repoName}}</div>
+            <div class="repourl">{{repo.repoUrl}}</div>
           </a>
         </li>
       </ul>
+      <button ng-show="isLoggedInAsCurrentUser() && !showFormToAddRepos" class="btn btn-default btn-repo" ng-click="showAddReposForm()">Add a Repo</button>
+      <div ng-show="isLoggedInAsCurrentUser() && showFormToAddRepos">
+        <ul class="nav nav-pills nav-stacked" ng-repeat="repos in userProfile.repolist">
+          <li>
+            <a target="_blank" ng-click="addARepo(repos.repoName, repos.repoUrl)">
+              <span>Add:</span>
+              <div class="reponame" name="repoName">{{repos.repoName}}</div>
+              <div class="repourl" name="repoUrl">{{repos.repoUrl}}</div>
+            </a>
+          </li>
+        </ul>
+        <div ng-show="userProfile.repolist.length === 0" class="available">No available repos to add</div>
+      </div>
+      <button ng-show="isLoggedInAsCurrentUser() && showFormToAddRepos" class="btn btn-default btn-repo" ng-click="cancelRepos()">Cancel</button>
     </div>
   </div>
 

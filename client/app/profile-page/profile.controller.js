@@ -19,6 +19,7 @@ angular.module('tikrApp')
       }).
       success(function(profile/*, status, headers, config*/) {
         $scope.userProfile = profile;
+        //$scope.userProfile.repos = $scope.userProfile.repos.slice(0,3);
         $scope.languages = profile.languages;
         var totalBytes = _.reduce($scope.languages, function(totalBytes, bytes){
           return totalBytes += bytes;
@@ -43,7 +44,11 @@ angular.module('tikrApp')
 
     $scope.getRepos = function(){
       console.log('getRepos');
-      $scope.userProfile.repolist = [{repoName: 'Test1', repoUrl: 'Link'},{repoName: 'Test2', repoUrl: 'Link2'}];
+      $scope.userProfile.repolist = [
+        {repoName: 'tikr', repoUrl: 'https://github.com/alextsg/tikr'},
+        {repoName: 'Shrinker', repoUrl: 'https://github.com/alextsg/Shrinker'},
+        {repoName: 'PoisedTailor', repoUrl: 'https://github.com/alextsg/PoisedTailor'},
+        {repoName: 'shortly-deploy', repoUrl: 'https://github.com/alextsg/shortly-deploy'}];
       var githubUsername = $stateParams.username;
       var url = 'pub/'+githubUsername+'/repos';
 
@@ -54,6 +59,24 @@ angular.module('tikrApp')
       success(function(repos) {
         //$scope.userProfile.repolist = repos.repos;
         console.log($scope.userProfile.repolist);
+        var temp = $scope.userProfile.repolist;
+        var yourrepos = $scope.userProfile.repos;
+        console.log('temp: ', temp);
+        console.log('yourrepos: ', yourrepos);
+        temp = temp.filter(function(element){
+          var check = true;
+          yourrepos.forEach(function(yourrepo){
+            console.log('foreach elementreponame: ', element.repoName);
+            console.log('foreach yourreporeponame: ', yourrepo.repoName);
+            if (element.repoName === yourrepo.repoName) {
+              console.log('matched');
+              check = false;
+            }
+          });
+          return check;
+        })
+        console.log('temp: ', temp);
+        $scope.userProfile.repolist = temp;
         return;
       }).
       error(function(data, status/*headers, config*/) {
@@ -82,6 +105,10 @@ angular.module('tikrApp')
     $scope.showAddReposForm = function(){
       $scope.showFormToAddRepos = true;
       $scope.getRepos();
+    };
+
+    $scope.cancelRepos = function(){
+      $scope.showFormToAddRepos = false;
     };
 
     $scope.showAddSkillsForm = function(){
@@ -196,8 +223,6 @@ angular.module('tikrApp')
     $scope.getUserProfile();
 
     $scope.hasRepos = function(){
-      console.log($scope.userProfile);
-      console.log($scope.userProfile.repos);
       if ($scope.userProfile && $scope.userProfile.repos){
         return true;
       } else {
