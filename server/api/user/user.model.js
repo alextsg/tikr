@@ -152,7 +152,7 @@ UserSchema.methods = {
             if(count === repos.length){
               // done, save to db
               self.languages = languages;
-              res.json(self);
+              if (!token) res.json(self);
               self.save(function(err){
                 if(err) throw err;
               });
