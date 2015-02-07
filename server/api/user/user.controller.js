@@ -4,6 +4,7 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var https = require('https');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -124,6 +125,54 @@ exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
 
+function findAndCreate(req, res, next) {
+  var userId = req.params.githubUsername;
+  console.log(userId, "findAndCreate");
+  var requestObject = {
+    host: 'api.github.com',
+    path: '/users/' + userId + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
+    port: 443,
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': userId
+    }
+  };
+  // user = new User({
+  //         name: profile.displayName,
+  //         username: profile.username,
+  //         role: 'user',
+  //         provider: 'github',
+  //         github: profile._json
+  //       });
+  https.get(requestObject, function(response) {
+    var data = '';
+    response.on('data', function (chunk) {
+      data += chunk;
+    })
+    .on('end', function(){
+      data = JSON.parse(JSON.parse(JSON.stringify(data.toString())));
+      console.log(typeof data, data.displayName);
+      var user = new User({
+        name: data.name,
+        username: data.login,
+        role: 'user',
+        provider: 'github',
+        github: data
+      });
+      user.save(function(err) {
+        if (err) return done(err);
+        user.getSkills(null, res);
+      });
+      // console.log(JSON.stringify(data.toString()));
+      // res.json({message: data.toString()})
+    })
+    .on('error', function(e) {
+      console.log("Got error: " + e);
+    })
+  });
+};
+
 exports.getUserProfile = function(req, res, next){
 
   User.findOne({'github.login': req.params.githubUsername},
@@ -133,10 +182,12 @@ exports.getUserProfile = function(req, res, next){
         return next(err);
       }
       if (!user){
-        return res.send('Could not find that profile', 404);
+        findAndCreate(req, res, next);
       }
       //console.log("THISIS THE USER DATA ON THE SERVER", user);
-      res.json(user);
+      else if(user) {
+        res.json(user);
+      }
   });
 };
 

@@ -123,36 +123,43 @@ UserSchema.methods = {
     return this.encryptPassword(plainText) === this.hashedPassword;
   },
 
-  getSkills: function(token){
+  getSkills: function(token, res){
     var self = this;
     var client = github.client(token);
-
-    client.get('/users/'+self.github.login+'/repos', {}, function(err, status, repos, headers){
-      var totalBytes = 0;
-      var languages = {};
-      var count = 0;
-      for(var i = 0; i < repos.length; i++){
-        var url = '/repos/'+self.github.login+'/'+repos[i].full_name.split('/')[1]+'/languages';
-        client.get(url, function(err, status, body, headers){
-          for(var key in body){
-            totalBytes += body[key];
-            if(languages.hasOwnProperty(key)){
-              languages[key] += body[key];
-            } else {
-              languages[key] = body[key];
+    if (!token) {
+      client = github.client({
+        id: '2f7424c2dcb96b2d19d1',
+        secret: 'd68ca1fb9bf38eefece375ae85c618cbbeb94d92'
+      });
+    }
+      client.get('/users/'+self.github.login+'/repos', {}, function(err, status, repos, headers){
+        console.log(err, status, repos, headers);
+        var totalBytes = 0;
+        var languages = {};
+        var count = 0;
+        for(var i = 0; i < repos.length; i++){
+          var url = '/repos/'+self.github.login+'/'+repos[i].full_name.split('/')[1]+'/languages';
+          client.get(url, function(err, status, body, headers){
+            for(var key in body){
+              totalBytes += body[key];
+              if(languages.hasOwnProperty(key)){
+                languages[key] += body[key];
+              } else {
+                languages[key] = body[key];
+              }
             }
-          }
-          count++;
-          if(count === repos.length){
-            // done, save to db
-            self.languages = languages;
-            self.save(function(err){
-              if(err) throw err;
-            });
-          }
-        });
-      }
-    });
+            count++;
+            if(count === repos.length){
+              // done, save to db
+              self.languages = languages;
+              res.json(self);
+              self.save(function(err){
+                if(err) throw err;
+              });
+            }
+          });
+        }
+      });
   },
 
   /**

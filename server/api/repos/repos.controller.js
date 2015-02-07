@@ -82,8 +82,6 @@ exports.show = function (req, res, next) {
 
 exports.showUser = function (req, res, next) {
   var userId = req.params.id;
-  var key = '2f7424c2dcb96b2d19d1';
-  var sec = 'd68ca1fb9bf38eefece375ae85c618cbbeb94d92';
   var requestObject = {
     host: 'api.github.com',
     path: '/users/' + userId + '?client_id=2f7424c2dcb96b2d19d1&client_secret=d68ca1fb9bf38eefece375ae85c618cbbeb94d92',
