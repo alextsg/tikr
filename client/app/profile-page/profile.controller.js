@@ -42,13 +42,32 @@ angular.module('tikrApp')
       });
     };
 
+    $scope.getRepoList = function(){
+      var temp = $scope.userProfile.repolist;
+      var yourrepos = $scope.userProfile.repos;
+      console.log('temp: ', temp);
+      console.log('yourrepos: ', yourrepos);
+      temp = temp.filter(function(element){
+        var check = true;
+        yourrepos.forEach(function(yourrepo){
+          console.log('foreach elementreponame: ', element.repoName);
+          console.log('foreach yourreporeponame: ', yourrepo.repoName);
+          if (element.repoName === yourrepo.repoName) {
+            console.log('matched');
+            check = false;
+          }
+        });
+        return check;
+      });
+      $scope.userProfile.repolist = temp;
+    }
+
     $scope.getRepos = function(){
-      console.log('getRepos');
-      $scope.userProfile.repolist = [
-        {repoName: 'tikr', repoUrl: 'https://github.com/alextsg/tikr'},
-        {repoName: 'Shrinker', repoUrl: 'https://github.com/alextsg/Shrinker'},
-        {repoName: 'PoisedTailor', repoUrl: 'https://github.com/alextsg/PoisedTailor'},
-        {repoName: 'shortly-deploy', repoUrl: 'https://github.com/alextsg/shortly-deploy'}];
+      // $scope.userProfile.repolist = [
+      //   {repoName: 'tikr', repoUrl: 'https://github.com/alextsg/tikr'},
+      //   {repoName: 'Shrinker', repoUrl: 'https://github.com/alextsg/Shrinker'},
+      //   {repoName: 'PoisedTailor', repoUrl: 'https://github.com/alextsg/PoisedTailor'},
+      //   {repoName: 'shortly-deploy', repoUrl: 'https://github.com/alextsg/shortly-deploy'}];
       var githubUsername = $stateParams.username;
       var url = 'pub/'+githubUsername+'/repos';
 
@@ -57,26 +76,7 @@ angular.module('tikrApp')
         url: url
       }).
       success(function(repos) {
-        //$scope.userProfile.repolist = repos.repos;
-        console.log($scope.userProfile.repolist);
-        var temp = $scope.userProfile.repolist;
-        var yourrepos = $scope.userProfile.repos;
-        console.log('temp: ', temp);
-        console.log('yourrepos: ', yourrepos);
-        temp = temp.filter(function(element){
-          var check = true;
-          yourrepos.forEach(function(yourrepo){
-            console.log('foreach elementreponame: ', element.repoName);
-            console.log('foreach yourreporeponame: ', yourrepo.repoName);
-            if (element.repoName === yourrepo.repoName) {
-              console.log('matched');
-              check = false;
-            }
-          });
-          return check;
-        })
-        console.log('temp: ', temp);
-        $scope.userProfile.repolist = temp;
+        $scope.userProfile.repolist = repos.repos;
         return;
       }).
       error(function(data, status/*headers, config*/) {
@@ -104,7 +104,7 @@ angular.module('tikrApp')
 
     $scope.showAddReposForm = function(){
       $scope.showFormToAddRepos = true;
-      $scope.getRepos();
+      $scope.getRepoList();
     };
 
     $scope.cancelRepos = function(){
@@ -119,15 +119,13 @@ angular.module('tikrApp')
       $scope.showFormToAddRepos = false;
       var newRepoName = name;
       var newRepoUrl = url;
-      console.log('hi');
       //submit POST request to server to add a skill to the current user's profile
       var githubUsername = $stateParams.username;
       var url = 'api/users/profiles/repo/'+githubUsername;
-      console.log('reponame: ', newRepoName);
-      console.log('repolink:', newRepoUrl);
       $http.post(url, {repoName: newRepoName, repoUrl: newRepoUrl}).
       success(function(profile/*status, headers, config*/) {
         $scope.userProfile = profile;
+        $scope.getRepos();
       }).
       error(function(data, status, headers, config) {
         console.log("Error adding skill", data, status);
@@ -221,6 +219,7 @@ angular.module('tikrApp')
     };
 
     $scope.getUserProfile();
+    $scope.getRepos();
 
     $scope.hasRepos = function(){
       if ($scope.userProfile && $scope.userProfile.repos){

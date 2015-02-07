@@ -26,7 +26,7 @@
         </li>
       </ul>
       <button ng-show="isLoggedInAsCurrentUser() && !showFormToAddRepos" class="btn btn-default btn-repo" ng-click="showAddReposForm()">Add a Repo</button>
-      <div ng-show="isLoggedInAsCurrentUser() && showFormToAddRepos">
+      <div ng-show="isLoggedInAsCurrentUser() && showFormToAddRepos" class="animate-slide">
         <ul class="nav nav-pills nav-stacked" ng-repeat="repos in userProfile.repolist">
           <li>
             <a target="_blank" ng-click="addARepo(repos.repoName, repos.repoUrl)">
